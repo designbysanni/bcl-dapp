@@ -1,21 +1,36 @@
 {
-  "name": "bcl-dapp-contracts",
+  "name": "bcl-dapp",
   "version": "1.0.0",
-  "description": "BCL DApp — CycleToken & CycleStaking smart contracts",
+  "private": true,
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "compile": "hardhat compile",
-    "test": "hardhat test",
-    "coverage": "hardhat coverage",
-    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
-    "deploy:local": "hardhat run scripts/deploy.js --network hardhat",
-    "verify:sepolia": "hardhat verify --network sepolia"
+    "test:contracts": "hardhat test",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.2",
-    "next": "14.2.3"
+    "next": "14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@rainbow-me/rainbowkit": "^2.1.2",
+    "wagmi": "^2.10.0",
+    "viem": "^2.13.0",
+    "@tanstack/react-query": "^5.40.0",
+    "react-hot-toast": "^2.4.1",
+    "clsx": "^2.1.1",
+    "@openzeppelin/contracts": "^5.0.2"
   },
   "devDependencies": {
+    "@types/node": "^20.13.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.4.5",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.22.0",
     "dotenv": "^16.4.5"
