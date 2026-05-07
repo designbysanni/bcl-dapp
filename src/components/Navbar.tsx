@@ -2,92 +2,148 @@
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useChainId } from "wagmi";
 import { SEPOLIA_CHAIN_ID } from "@/lib/contracts";
-import clsx from "clsx";
-
-const navLinks = [
-  { label: "Dashboard", href: "/" },
-  { label: "Stake", href: "/#stake" },
-  { label: "Docs", href: "https://bcl.sannisanni.com/docs", external: true },
-];
 
 export function Navbar() {
-  const pathname = usePathname();
-  const chainId = useChainId();
-  const isWrongNetwork = chainId !== SEPOLIA_CHAIN_ID;
+  const chainId  = useChainId();
+  const wrongNet = chainId !== SEPOLIA_CHAIN_ID && chainId !== 0;
 
   return (
     <>
       {/* Wrong-network banner */}
-      {isWrongNetwork && chainId !== 0 && (
-        <div className="w-full bg-status-warning/10 border-b border-status-warning/20 px-4 py-2 text-center text-sm text-status-warning">
-          ⚠️ You&apos;re on the wrong network. Please switch to{" "}
-          <span className="font-semibold">Sepolia Testnet</span>.
+      {wrongNet && (
+        <div style={{
+          width: '100%',
+          background: 'rgba(251,191,36,0.10)',
+          borderBottom: '1px solid rgba(251,191,36,0.25)',
+          padding: '8px 16px',
+          textAlign: 'center',
+          fontSize: 13,
+          color: '#fbbf24',
+          fontFamily: "'Exo 2', sans-serif",
+          fontWeight: 600,
+        }}>
+          ⚠️ Please switch to <strong>Sepolia Testnet</strong> to use BCL DApp.
         </div>
       )}
 
-      <nav className="sticky top-0 z-50 w-full backdrop-blur-xl bg-bg-deep/80 border-b border-[rgba(0,198,255,0.1)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-cyan to-accent-purple flex items-center justify-center shadow-glow-sm group-hover:shadow-glow transition-shadow duration-300">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path
-                  d="M9 2L15 5.5V12.5L9 16L3 12.5V5.5L9 2Z"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  className="text-bg-deep"
-                  fill="none"
-                />
-                <circle cx="9" cy="9" r="2.5" fill="currentColor" className="text-bg-deep" />
-              </svg>
-            </div>
-            <div>
-              <span className="font-display font-bold text-text-primary text-base leading-none block">
-                BCL
-              </span>
-              <span className="text-text-muted text-[10px] leading-none">
-                Block Cycle Labs
-              </span>
-            </div>
-          </Link>
-
-          {/* Nav links — desktop */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noopener noreferrer" : undefined}
-                className={clsx(
-                  "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-150",
-                  pathname === link.href
-                    ? "text-accent-cyan bg-accent-cyan/10"
-                    : "text-text-secondary hover:text-text-primary hover:bg-white/5"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
+      {/* ── Main nav ── */}
+      <nav style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '18px 20px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        gap: 0,
+      }}>
+        {/* Pill */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          background: 'rgba(10,20,70,0.85)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          borderRadius: 50,
+          padding: '5px 6px 5px 10px',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.08)',
+          gap: 0,
+        }}>
+          {/* Logo mark */}
+          <div style={{
+            width: 30, height: 30,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #1e3faf 0%, #06b6d4 100%)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0,
+            fontSize: 14,
+            color: 'white',
+            fontWeight: 800,
+            boxShadow: '0 0 0 2px rgba(6,182,212,0.28)',
+          }}>
+            ⬡
           </div>
 
-          {/* Right side */}
-          <div className="flex items-center gap-3">
-            <span className="badge-network hidden sm:flex">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan animate-pulse" />
-              Sepolia
-            </span>
-            <ConnectButton
-              accountStatus="avatar"
-              chainStatus="none"
-              showBalance={false}
-            />
+          {/* Brand name */}
+          <span style={{
+            fontFamily: "'Exo 2', sans-serif",
+            fontWeight: 800,
+            fontSize: 13,
+            letterSpacing: '0.10em',
+            textTransform: 'uppercase',
+            color: 'white',
+            margin: '0 14px 0 8px',
+            whiteSpace: 'nowrap',
+          }}>
+            BlockCycle
+          </span>
+
+          {/* Nav links */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <NavLink href="/#stake">Stake</NavLink>
+            <NavLink href="https://docs.blockcyclelabs.com" external>Doc</NavLink>
+            <NavLink href="https://app.uniswap.org" external>Buy $Cycle</NavLink>
+
+            {/* RainbowKit connect / account button */}
+            <div style={{ marginLeft: 4 }}>
+              <ConnectButton
+                accountStatus="avatar"
+                chainStatus="none"
+                showBalance={false}
+              />
+            </div>
           </div>
         </div>
       </nav>
     </>
+  );
+}
+
+function NavLink({
+  href,
+  children,
+  external,
+}: {
+  href: string;
+  children: React.ReactNode;
+  external?: boolean;
+}) {
+  const base: React.CSSProperties = {
+    fontFamily: "'Exo 2', sans-serif",
+    fontWeight: 600,
+    fontSize: 12,
+    letterSpacing: '0.06em',
+    textTransform: 'uppercase' as const,
+    color: 'rgba(255,255,255,0.65)',
+    padding: '7px 13px',
+    borderRadius: 30,
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    textDecoration: 'none',
+    whiteSpace: 'nowrap' as const,
+    border: 'none',
+    background: 'transparent',
+  };
+
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" style={base}
+        onMouseEnter={e => { (e.target as HTMLElement).style.color = 'white'; (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.08)'; }}
+        onMouseLeave={e => { (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.65)'; (e.target as HTMLElement).style.background = 'transparent'; }}
+      >
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} style={base}
+      onMouseEnter={e => { (e.target as HTMLElement).style.color = 'white'; (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.08)'; }}
+      onMouseLeave={e => { (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.65)'; (e.target as HTMLElement).style.background = 'transparent'; }}
+    >
+      {children}
+    </Link>
   );
 }

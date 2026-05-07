@@ -12,56 +12,176 @@ import clsx from "clsx";
 
 type Tab = "stake" | "unstake";
 
+const S: Record<string, React.CSSProperties> = {
+  panel: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 0,
+  },
+  tabBar: {
+    display: 'flex',
+    borderBottom: '1px solid rgba(255,255,255,0.10)',
+    padding: '0 4px',
+    gap: 0,
+  },
+  tab: {
+    fontFamily: "'Exo 2', sans-serif",
+    fontWeight: 600,
+    fontSize: 13,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase' as const,
+    color: 'rgba(255,255,255,0.45)',
+    padding: '14px 18px',
+    background: 'transparent',
+    border: 'none',
+    borderBottom: '2px solid transparent',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    whiteSpace: 'nowrap' as const,
+  },
+  tabActive: {
+    color: '#ffffff',
+    borderBottomColor: '#ffffff',
+    fontWeight: 700,
+  },
+  body: {
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: 14,
+  },
+  label: {
+    fontFamily: "'Exo 2', sans-serif",
+    fontSize: 10,
+    fontWeight: 700,
+    textTransform: 'uppercase' as const,
+    letterSpacing: '0.10em',
+    color: 'rgba(255,255,255,0.42)',
+    marginBottom: 6,
+  },
+  inputWrap: {
+    position: 'relative' as const,
+  },
+  maxTag: {
+    position: 'absolute' as const,
+    right: 12,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    fontFamily: "'Space Mono', monospace",
+    fontSize: 10,
+    fontWeight: 700,
+    color: '#60a5fa',
+    background: 'rgba(96,165,250,0.12)',
+    border: '1px solid rgba(96,165,250,0.25)',
+    borderRadius: 5,
+    padding: '3px 7px',
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+  },
+  balanceRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    fontSize: 13,
+  },
+  balanceLabel: {
+    fontFamily: "'Exo 2', sans-serif",
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.45)',
+    fontWeight: 500,
+  },
+  balanceValue: {
+    fontFamily: "'Space Mono', monospace",
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.80)',
+    fontWeight: 600,
+  },
+  estimateBox: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    background: 'rgba(34,197,94,0.07)',
+    border: '1px solid rgba(34,197,94,0.18)',
+    borderRadius: 10,
+    padding: '10px 14px',
+    fontSize: 12,
+  },
+  errorText: {
+    fontFamily: "'Exo 2', sans-serif",
+    fontSize: 12,
+    color: '#f87171',
+    fontWeight: 600,
+  },
+  stepRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    fontSize: 12,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    background: 'rgba(255,255,255,0.10)',
+  },
+  txLink: {
+    textAlign: 'center' as const,
+    fontFamily: "'Exo 2', sans-serif",
+    fontSize: 11,
+    color: '#60a5fa',
+    textDecoration: 'none',
+  },
+  unstakeNote: {
+    textAlign: 'center' as const,
+    fontFamily: "'Exo 2', sans-serif",
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.40)',
+  },
+};
+
 export function StakingPanel() {
-  const [tab, setTab] = useState<Tab>("stake");
+  const [tab, setTab]               = useState<Tab>("stake");
   const [inputValue, setInputValue] = useState("");
   const [isApprovalStep, setIsApprovalStep] = useState(false);
 
   const { isConnected } = useAccount();
-  const { balance, allowance, hasEnoughAllowance, approve, isApproving, approveSuccess, refetch: refetchToken } = useToken();
-  const { stakedBalance, stake, unstake, txHash, isLoading, txSuccess, reset, refetchAll } = useStaking();
+  const {
+    balance, allowance, hasEnoughAllowance,
+    approve, isApproving, approveSuccess, refetch: refetchToken,
+  } = useToken();
+  const {
+    stakedBalance, stake, unstake,
+    txHash, isLoading, txSuccess, reset, refetchAll,
+  } = useStaking();
 
   const parsedAmount = (() => {
-    try {
-      return inputValue ? parseEther(inputValue) : 0n;
-    } catch {
-      return 0n;
-    }
+    try { return inputValue ? parseEther(inputValue) : 0n; }
+    catch { return 0n; }
   })();
 
-  const maxBalance = tab === "stake" ? balance : stakedBalance;
+  const maxBalance    = tab === "stake" ? balance : stakedBalance;
   const isOverBalance = parsedAmount > maxBalance && parsedAmount > 0n;
-  const isZero = parsedAmount === 0n;
+  const isZero        = parsedAmount === 0n;
   const needsApproval = tab === "stake" && !hasEnoughAllowance(parsedAmount) && parsedAmount > 0n;
+  const annualEst     = parsedAmount > 0n ? formatCycle(calcAnnualRewards(parsedAmount)) : null;
 
-  const annualEstimate = parsedAmount > 0n
-    ? formatCycle(calcAnnualRewards(parsedAmount))
-    : null;
-
-  // Handle approval success → proceed to stake
   useEffect(() => {
     if (approveSuccess && isApprovalStep) {
       setIsApprovalStep(false);
-      toast.success("Approval confirmed — now staking...");
+      toast.success("Approval confirmed — staking now…");
       stake(parsedAmount);
       refetchToken();
     }
   }, [approveSuccess]);
 
-  // Handle TX success
   useEffect(() => {
     if (txSuccess) {
-      const msg = tab === "stake"
-        ? `Successfully staked ${inputValue} CYCLE`
-        : `Unstaked ${inputValue} CYCLE (+ rewards claimed)`;
-      toast.success(msg, {
-        icon: "✅",
-        duration: 6000,
-      });
-      setInputValue("");
-      reset();
-      refetchAll();
-      refetchToken();
+      toast.success(
+        tab === "stake"
+          ? `Staked ${inputValue} CYCLE ✓`
+          : `Unstaked ${inputValue} CYCLE ✓`,
+        { icon: "✅", duration: 6000 }
+      );
+      setInputValue(""); reset(); refetchAll(); refetchToken();
     }
   }, [txSuccess]);
 
@@ -71,163 +191,153 @@ export function StakingPanel() {
 
   function handleAction() {
     if (!isConnected) return;
-
     if (tab === "stake") {
       if (needsApproval) {
         setIsApprovalStep(true);
-        toast("Approving CYCLE spend...", { icon: "⏳" });
+        toast("Approving CYCLE spend…", { icon: "⏳" });
         approve(parsedAmount);
       } else {
-        toast("Staking CYCLE...", { icon: "⏳" });
+        toast("Staking CYCLE…", { icon: "⏳" });
         stake(parsedAmount);
       }
     } else {
-      toast("Unstaking CYCLE...", { icon: "⏳" });
+      toast("Unstaking CYCLE…", { icon: "⏳" });
       unstake(parsedAmount);
     }
   }
 
   function getButtonLabel() {
-    if (!isConnected) return "Connect Wallet";
-    if (isApproving) return "Approving...";
-    if (isLoading && tab === "stake" && needsApproval) return "Approving...";
-    if (isLoading) return tab === "stake" ? "Staking..." : "Unstaking...";
-    if (needsApproval && tab === "stake") return "Approve & Stake";
+    if (!isConnected)                              return "Connect Wallet";
+    if (isApproving)                               return "Approving…";
+    if (isLoading && tab === "stake" && needsApproval) return "Approving…";
+    if (isLoading)    return tab === "stake" ? "Staking…" : "Unstaking…";
+    if (needsApproval && tab === "stake")          return "Approve & Stake";
     return tab === "stake" ? "Stake CYCLE" : "Unstake CYCLE";
   }
 
   const isProcessing = isApproving || isLoading || isApprovalStep;
-  const isDisabled = !isConnected || isZero || isOverBalance || isProcessing;
+  const isDisabled   = !isConnected || isZero || isOverBalance || isProcessing;
 
   return (
-    <div id="stake" className="card-glow flex flex-col gap-6">
-      {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-bg-elevated rounded-xl">
-        {(["stake", "unstake"] as Tab[]).map((t) => (
+    <div style={S.panel} id="stake">
+
+      {/* Tab bar — Stake / Unstake */}
+      <div style={S.tabBar}>
+        {(["stake", "unstake"] as Tab[]).map(t => (
           <button
             key={t}
             onClick={() => { setTab(t); setInputValue(""); reset(); }}
-            className={clsx(
-              "flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 capitalize",
-              tab === t
-                ? "bg-accent-cyan text-bg-deep shadow-glow-sm"
-                : "text-text-secondary hover:text-text-primary"
-            )}
+            style={{
+              ...S.tab,
+              ...(tab === t ? S.tabActive : {}),
+            }}
           >
-            {t}
+            {t === "stake" ? "Stake" : "Unstake"}
           </button>
         ))}
       </div>
 
-      {/* Balance display */}
-      <div className="flex justify-between text-sm">
-        <span className="text-text-muted">
-          {tab === "stake" ? "Available" : "Staked"}
-        </span>
-        <span className="text-text-secondary font-mono">
-          {formatCycle(maxBalance)}{" "}
-          <span className="text-accent-cyan font-semibold">CYCLE</span>
-        </span>
-      </div>
+      <div style={S.body}>
 
-      {/* Input */}
-      <div className="relative">
-        <input
-          type="number"
-          placeholder="0.0"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          className={clsx(
-            "input-base pr-28",
-            isOverBalance && "border-status-error/50 focus:ring-status-error/30"
-          )}
-          min="0"
-          step="any"
-        />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          <button
-            onClick={handleMax}
-            className="text-xs font-bold text-accent-cyan hover:text-accent-cyan/80 transition-colors bg-accent-cyan/10 hover:bg-accent-cyan/20 px-2.5 py-1 rounded-lg"
-          >
-            MAX
-          </button>
-          <span className="text-text-muted font-semibold text-sm">CYCLE</span>
-        </div>
-      </div>
-
-      {/* Validation error */}
-      {isOverBalance && (
-        <p className="text-status-error text-sm -mt-4 flex items-center gap-1">
-          <span>⚠</span>{" "}
-          {tab === "stake" ? "Insufficient CYCLE balance" : "Insufficient staked balance"}
-        </p>
-      )}
-
-      {/* Annual rewards estimate */}
-      {annualEstimate && !isOverBalance && tab === "stake" && (
-        <div className="flex items-center justify-between p-3 rounded-xl bg-accent-green/5 border border-accent-green/15 text-sm -mt-2">
-          <span className="text-text-muted">Estimated annual rewards</span>
-          <span className="text-accent-green font-mono font-semibold">
-            +{annualEstimate} CYCLE
+        {/* Available balance */}
+        <div style={S.balanceRow}>
+          <span style={S.balanceLabel}>{tab === "stake" ? "Available" : "Staked"}</span>
+          <span style={S.balanceValue}>
+            {formatCycle(maxBalance)}{" "}
+            <span style={{ color: '#60a5fa', fontWeight: 700 }}>CYCLE</span>
           </span>
         </div>
-      )}
 
-      {/* Unstake notice */}
-      {tab === "unstake" && parsedAmount > 0n && !isOverBalance && (
-        <p className="text-text-muted text-xs -mt-2 text-center">
-          Unstaking will automatically claim your pending rewards.
-        </p>
-      )}
-
-      {/* Approval step indicator */}
-      {needsApproval && tab === "stake" && parsedAmount > 0n && (
-        <div className="flex items-center gap-3 text-sm -mt-2">
-          <StepDot active={isApprovalStep || isApproving} done={approveSuccess} label="1. Approve" />
-          <div className="flex-1 h-px bg-border-subtle" />
-          <StepDot active={!needsApproval && isLoading} done={txSuccess} label="2. Stake" />
+        {/* Amount input */}
+        <div style={S.inputWrap}>
+          <input
+            type="number"
+            placeholder="0.0"
+            value={inputValue}
+            onChange={e => setInputValue(e.target.value)}
+            className={clsx("input-base", isOverBalance && "border-status-error/50")}
+            style={{ paddingRight: 64 }}
+            min="0"
+            step="any"
+          />
+          <button style={S.maxTag} onClick={handleMax}>MAX</button>
         </div>
-      )}
 
-      {/* Main CTA */}
-      <button
-        onClick={handleAction}
-        disabled={isDisabled}
-        className={clsx(
-          "btn-primary w-full text-base font-bold",
-          !isDisabled && "animate-pulse-glow"
+        {/* Validation error */}
+        {isOverBalance && (
+          <p style={S.errorText}>
+            ⚠ {tab === "stake" ? "Insufficient CYCLE balance" : "Insufficient staked balance"}
+          </p>
         )}
-      >
-        {isProcessing && <Spinner />}
-        {getButtonLabel()}
-      </button>
 
-      {/* TX link */}
-      {txHash && (
-        <a
-          href={etherscanTx(txHash)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-center text-xs text-accent-cyan hover:underline"
+        {/* Annual estimate */}
+        {annualEst && !isOverBalance && tab === "stake" && (
+          <div style={S.estimateBox}>
+            <span style={{ fontFamily: "'Exo 2', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
+              Estimated annual rewards
+            </span>
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: '#22c55e', fontWeight: 700 }}>
+              +{annualEst} CYCLE
+            </span>
+          </div>
+        )}
+
+        {/* Unstake note */}
+        {tab === "unstake" && parsedAmount > 0n && !isOverBalance && (
+          <p style={S.unstakeNote}>
+            Unstaking will automatically claim your pending rewards.
+          </p>
+        )}
+
+        {/* Approve → Stake step indicator */}
+        {needsApproval && tab === "stake" && parsedAmount > 0n && (
+          <div style={S.stepRow}>
+            <StepDot active={isApprovalStep || isApproving} done={approveSuccess} label="1. Approve" />
+            <div style={S.divider} />
+            <StepDot active={!needsApproval && isLoading} done={txSuccess ?? false} label="2. Stake" />
+          </div>
+        )}
+
+        {/* Main CTA */}
+        <button
+          onClick={handleAction}
+          disabled={isDisabled}
+          className="btn-primary w-full"
+          style={{ height: 50, fontSize: 14, marginTop: 4 }}
         >
-          View transaction on Etherscan ↗
-        </a>
-      )}
+          {isProcessing && <Spinner />}
+          {getButtonLabel()}
+        </button>
+
+        {/* Etherscan tx link */}
+        {txHash && (
+          <a
+            href={etherscanTx(txHash)}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={S.txLink}
+          >
+            View transaction on Etherscan ↗
+          </a>
+        )}
+
+      </div>
     </div>
   );
 }
 
 function StepDot({ active, done, label }: { active: boolean; done: boolean; label: string }) {
+  const color = done ? '#22c55e' : active ? '#60a5fa' : 'rgba(255,255,255,0.35)';
   return (
-    <div className={clsx("flex items-center gap-1.5 text-xs font-medium",
-      done ? "text-accent-green" : active ? "text-accent-cyan" : "text-text-muted"
-    )}>
-      <span className={clsx(
-        "w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold",
-        done ? "bg-accent-green/20 border-accent-green text-accent-green" :
-          active ? "bg-accent-cyan/20 border-accent-cyan text-accent-cyan" :
-            "border-border-subtle text-text-muted"
-      )}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, fontFamily: "'Exo 2', sans-serif", fontWeight: 600, color }}>
+      <span style={{
+        width: 20, height: 20, borderRadius: '50%',
+        border: `1px solid ${color}`,
+        background: done ? 'rgba(34,197,94,0.15)' : active ? 'rgba(96,165,250,0.15)' : 'transparent',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 10, fontWeight: 700, color,
+        flexShrink: 0,
+      }}>
         {done ? "✓" : label[0]}
       </span>
       {label}
@@ -237,7 +347,7 @@ function StepDot({ active, done, label }: { active: boolean; done: boolean; labe
 
 function Spinner() {
   return (
-    <svg className="animate-spin w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none">
+    <svg className="animate-spin" style={{ width: 16, height: 16, marginRight: 4 }} viewBox="0 0 24 24" fill="none">
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
     </svg>
