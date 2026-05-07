@@ -11,138 +11,155 @@ export function Navbar() {
 
   return (
     <>
-      {/* Wrong-network banner */}
       {wrongNet && (
         <div style={{
           width: '100%',
-          background: 'rgba(251,191,36,0.10)',
-          borderBottom: '1px solid rgba(251,191,36,0.25)',
-          padding: '8px 16px',
+          background: 'rgba(251,191,36,0.12)',
+          borderBottom: '1px solid rgba(251,191,36,0.28)',
+          padding: '7px 16px',
           textAlign: 'center',
-          fontSize: 13,
+          fontSize: 12,
           color: '#fbbf24',
           fontFamily: "'Exo 2', sans-serif",
-          fontWeight: 600,
+          fontWeight: 700,
+          letterSpacing: '0.04em',
+          flexShrink: 0,
         }}>
-          ⚠️ Please switch to <strong>Sepolia Testnet</strong> to use BCL DApp.
+          ⚠️ Switch to <strong>Sepolia Testnet</strong> to use BCL DApp
         </div>
       )}
 
-      {/* ── Main nav ── */}
-      <nav style={{
+      {/* Top bar — centered pill + right avatar */}
+      <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '18px 20px',
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        gap: 0,
+        padding: '14px 20px',
+        position: 'relative',
+        flexShrink: 0,
       }}>
-        {/* Pill */}
+
+        {/* Center pill */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          background: 'rgba(10,20,70,0.85)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.12)',
+          background: 'rgba(8,16,56,0.82)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          border: '1px solid rgba(255,255,255,0.14)',
           borderRadius: 50,
-          padding: '5px 6px 5px 10px',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.08)',
+          padding: '5px 6px 5px 8px',
           gap: 0,
+          boxShadow: '0 6px 28px rgba(0,0,0,0.50), inset 0 1px 0 rgba(255,255,255,0.10)',
         }}>
-          {/* Logo mark */}
+          {/* Logo circle */}
           <div style={{
-            width: 30, height: 30,
+            width: 28, height: 28,
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #1e3faf 0%, #06b6d4 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
-            fontSize: 14,
-            color: 'white',
-            fontWeight: 800,
-            boxShadow: '0 0 0 2px rgba(6,182,212,0.28)',
+            boxShadow: '0 0 0 2px rgba(6,182,212,0.35), 0 2px 8px rgba(0,0,0,0.4)',
+            marginRight: 7,
           }}>
-            ⬡
+            <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
+              <path d="M9 2L15 5.5V12.5L9 16L3 12.5V5.5L9 2Z" stroke="white" strokeWidth="1.5" fill="none"/>
+              <circle cx="9" cy="9" r="2.5" fill="white"/>
+            </svg>
           </div>
 
-          {/* Brand name */}
+          {/* Brand */}
           <span style={{
             fontFamily: "'Exo 2', sans-serif",
-            fontWeight: 800,
-            fontSize: 13,
-            letterSpacing: '0.10em',
+            fontWeight: 900,
+            fontSize: 12,
+            letterSpacing: '0.12em',
             textTransform: 'uppercase',
-            color: 'white',
-            margin: '0 14px 0 8px',
+            color: '#ffffff',
+            marginRight: 14,
             whiteSpace: 'nowrap',
-          }}>
-            BlockCycle
-          </span>
+          }}>BlockCycle</span>
 
           {/* Nav links */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <NavLink href="/#stake">Stake</NavLink>
-            <NavLink href="https://docs.blockcyclelabs.com" external>Doc</NavLink>
-            <NavLink href="https://app.uniswap.org" external>Buy $Cycle</NavLink>
+          <NavLink href="/#stake">Stake</NavLink>
+          <NavLink href="https://docs.blockcyclelabs.com" external>Doc</NavLink>
+          <NavLink href="https://app.uniswap.org" external>Buy $Cycle</NavLink>
 
-            {/* RainbowKit connect / account button */}
-            <div style={{ marginLeft: 4 }}>
-              <ConnectButton
-                accountStatus="avatar"
-                chainStatus="none"
-                showBalance={false}
-              />
-            </div>
+          {/* RainbowKit button */}
+          <div style={{ marginLeft: 5 }}>
+            <ConnectButton accountStatus="avatar" chainStatus="none" showBalance={false} />
           </div>
         </div>
-      </nav>
+
+        {/* Dropdown caret — Figma has this */}
+        <div style={{
+          position: 'absolute',
+          right: 76,
+          width: 28, height: 28,
+          borderRadius: '50%',
+          background: 'rgba(8,16,56,0.82)',
+          border: '1px solid rgba(255,255,255,0.14)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer',
+          fontSize: 10,
+          color: 'rgba(255,255,255,0.60)',
+        }}>▼</div>
+
+        {/* Avatar circle */}
+        <div style={{
+          position: 'absolute',
+          right: 20,
+          width: 42, height: 42,
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #7c3aed 0%, #db2777 100%)',
+          border: '2px solid rgba(255,255,255,0.22)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 20,
+          overflow: 'hidden',
+          boxShadow: '0 4px 14px rgba(0,0,0,0.40)',
+          flexShrink: 0,
+        }}>
+          🧑‍💻
+        </div>
+      </div>
     </>
   );
 }
 
-function NavLink({
-  href,
-  children,
-  external,
-}: {
-  href: string;
-  children: React.ReactNode;
-  external?: boolean;
+function NavLink({ href, children, external }: {
+  href: string; children: React.ReactNode; external?: boolean;
 }) {
-  const base: React.CSSProperties = {
+  const style: React.CSSProperties = {
     fontFamily: "'Exo 2', sans-serif",
-    fontWeight: 600,
-    fontSize: 12,
-    letterSpacing: '0.06em',
-    textTransform: 'uppercase' as const,
-    color: 'rgba(255,255,255,0.65)',
+    fontWeight: 700,
+    fontSize: 11,
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    color: 'rgba(255,255,255,0.70)',
     padding: '7px 13px',
     borderRadius: 30,
     cursor: 'pointer',
-    transition: 'all 0.2s',
+    transition: 'all 0.18s',
     textDecoration: 'none',
-    whiteSpace: 'nowrap' as const,
+    whiteSpace: 'nowrap',
     border: 'none',
     background: 'transparent',
+    display: 'inline-block',
   };
-
-  if (external) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" style={base}
-        onMouseEnter={e => { (e.target as HTMLElement).style.color = 'white'; (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.08)'; }}
-        onMouseLeave={e => { (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.65)'; (e.target as HTMLElement).style.background = 'transparent'; }}
-      >
-        {children}
-      </a>
-    );
-  }
+  const enter = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.color = '#fff';
+    e.currentTarget.style.background = 'rgba(255,255,255,0.10)';
+  };
+  const leave = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.color = 'rgba(255,255,255,0.70)';
+    e.currentTarget.style.background = 'transparent';
+  };
+  if (external) return (
+    <a href={href} target="_blank" rel="noopener noreferrer" style={style}
+      onMouseEnter={enter} onMouseLeave={leave}>{children}</a>
+  );
   return (
-    <Link href={href} style={base}
-      onMouseEnter={e => { (e.target as HTMLElement).style.color = 'white'; (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.08)'; }}
-      onMouseLeave={e => { (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.65)'; (e.target as HTMLElement).style.background = 'transparent'; }}
-    >
+    <Link href={href} style={style} onMouseEnter={enter} onMouseLeave={leave}>
       {children}
     </Link>
   );
