@@ -352,7 +352,7 @@ export default function Home() {
                   onClick={() => setFilter(t.key)}
                   style={{
                     fontFamily: "'Exo 2', sans-serif",
-                    fontWeight: 600,
+                    fontWeight: filter === t.key ? 700 : 600,
                     fontSize: 13,
                     color: filter === t.key ? '#ffffff' : 'rgba(255,255,255,0.42)',
                     padding: '14px 18px',
@@ -361,7 +361,6 @@ export default function Home() {
                     borderBottom: `2px solid ${filter === t.key ? '#ffffff' : 'transparent'}`,
                     cursor: 'pointer',
                     transition: 'all 0.18s',
-                    fontWeight: filter === t.key ? 700 : 600,
                   } as React.CSSProperties}
                 >
                   {t.label}
