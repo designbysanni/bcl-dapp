@@ -200,3 +200,31 @@
 .animate-slide-up  { animation: slideUp 0.35s ease; }
 
 @keyframes counterTick { 0% { opacity: 0.65; } 100% { opacity: 1; } }
+
+/* ── Responsive helpers ── */
+@media (max-width: 767px) {
+  html, body { overflow: hidden; }
+
+  /* Horizontal card scroll snap */
+  .asset-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+  }
+  .asset-scroll > * {
+    scroll-snap-align: start;
+  }
+
+  /* Table: hide Block column on mobile */
+  table th:nth-child(3),
+  table td:nth-child(3) { display: none; }
+}
+
+@media (min-width: 768px) and (max-width: 1099px) {
+  /* Tablet: hide Sepolia block column in tx table */
+  table th:nth-child(3),
+  table td:nth-child(3) { display: none; }
+}

@@ -65,9 +65,9 @@ export function useTransactionHistory() {
       ]);
 
       const rows: TxRecord[] = [
-        ...(staked.status   === "fulfilled" ? staked.value.map(l   => ({ hash: l.transactionHash ?? "", type: "Stake"   as TxType, amount: ((l.args as any).amount  ?? 0n) as bigint, blockNumber: l.blockNumber ?? 0n })) : []),
-        ...(unstaked.status === "fulfilled" ? unstaked.value.map(l => ({ hash: l.transactionHash ?? "", type: "Unstake" as TxType, amount: ((l.args as any).amount  ?? 0n) as bigint, blockNumber: l.blockNumber ?? 0n })) : []),
-        ...(claimed.status  === "fulfilled" ? claimed.value.map(l  => ({ hash: l.transactionHash ?? "", type: "Claim"   as TxType, amount: ((l.args as any).rewards ?? 0n) as bigint, blockNumber: l.blockNumber ?? 0n })) : []),
+        ...(staked.status   === "fulfilled" ? staked.value.map(l   => ({ hash: l.transactionHash ?? "", type: "Stake"   as TxType, amount: ((l as any).args?.amount  ?? 0n) as bigint, blockNumber: l.blockNumber ?? 0n })) : []),
+        ...(unstaked.status === "fulfilled" ? unstaked.value.map(l => ({ hash: l.transactionHash ?? "", type: "Unstake" as TxType, amount: ((l as any).args?.amount  ?? 0n) as bigint, blockNumber: l.blockNumber ?? 0n })) : []),
+        ...(claimed.status  === "fulfilled" ? claimed.value.map(l  => ({ hash: l.transactionHash ?? "", type: "Claim"   as TxType, amount: ((l as any).args?.rewards ?? 0n) as bigint, blockNumber: l.blockNumber ?? 0n })) : []),
       ].sort((a, b) => (a.blockNumber > b.blockNumber ? -1 : 1));
 
       setRecords(rows);
