@@ -140,11 +140,10 @@ function StakeModal({ onClose }: { onClose: () => void }) {
 function ConnectOverlay() {
   return (
     <div style={{
-      position: "absolute", inset: 0, zIndex: 10,
+      position: "fixed", inset: 0, zIndex: 10,
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       gap: 18, padding: 20,
-      background: "rgba(18,24,56,0.55)", backdropFilter: "blur(2px)",
-      borderRadius: "inherit",
+      background: "rgba(10,16,44,0.60)", backdropFilter: "blur(4px)",
     }}>
       <div style={{
         width: 72, height: 72, borderRadius: "50%",
