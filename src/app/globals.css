@@ -5,11 +5,11 @@
 @layer base {
   :root {
     /* Page */
-    --bg-page:    #135989;
+    --bg-page:    #3099ef;
 
     /* Cards */
-    --bg-card:    #131939;
-    --bg-card-el: #0d1631;
+    --bg-card:    #121838;
+    --bg-card-el: #0d1225;
 
     /* Borders */
     --border:     rgba(255,255,255,0.09);
@@ -21,7 +21,7 @@
     --text-dim:       rgba(255,255,255,0.28);
 
     /* Accents */
-    --accent-blue:    #3B82F6;
+    --accent-blue:    #3099ef;
     --accent-green:   #10B981;
     --accent-purple:  #8B5CF6;
     --accent-yellow:  #F59E0B;
@@ -149,9 +149,9 @@
 
 /* ── RainbowKit overrides — blue pill to match BCL brand ── */
 [data-rk] {
-  --rk-colors-accentColor:            #2563EB !important;
+  --rk-colors-accentColor:            #3099ef !important;
   --rk-colors-accentColorForeground:  #ffffff !important;
-  --rk-colors-modalBackground:        #131939 !important;
+  --rk-colors-modalBackground:        #121838 !important;
   --rk-colors-modalBorder:            rgba(255,255,255,0.11) !important;
   --rk-colors-modalText:              #ffffff !important;
   --rk-colors-modalTextSecondary:     rgba(255,255,255,0.55) !important;
@@ -161,7 +161,7 @@
 }
 [data-rk] button[data-testid="rk-connect-button"],
 [data-rk] button[data-testid="rk-account-button"] {
-  background: linear-gradient(135deg, #1d4ed8, #2563EB) !important;
+  background: linear-gradient(135deg, #1a6bc4, #3099ef) !important;
   color: #ffffff !important;
   border-radius: 28px !important;
   font-family: var(--font-sans) !important;

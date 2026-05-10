@@ -7,7 +7,7 @@ import { SEPOLIA_CHAIN_ID } from "@/lib/contracts";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
 const PP   = "'Poppins', var(--font-poppins), system-ui, sans-serif";
-const CARD = "#131939";
+const CARD = "#121838";
 const LOGO = "https://i.ibb.co/XZXzy5Rt/68aee553aa779e1297fca7eb.png";
 const DOCS = "https://bcl.sannisanni.com/docs";
 
@@ -131,7 +131,7 @@ function MobileNav({ onBuyCycle }: { onBuyCycle?: () => void }) {
 
   return (
     <div style={{
-      background: "#135989",
+      background: "#3099ef",
       borderBottom: "1px solid rgba(255,255,255,0.10)",
       flexShrink: 0, padding: "11px 14px 0",
     }}>

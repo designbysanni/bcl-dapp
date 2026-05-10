@@ -6,7 +6,7 @@ import { useAccount } from "wagmi";
 import { StakingPanel } from "./StakingPanel";
 import { UserPosition } from "./UserPosition";
 import { useToken } from "@/hooks/useToken";
-import { useSwap, UNI_WETH, UNI_FACTORY, FEE_TIER } from "@/hooks/useSwap";
+import { useSwap, UNI_WETH, UNI_FACTORY, FEE_TIER, type SwapDirection } from "@/hooks/useSwap";
 import { useSend } from "@/hooks/useSend";
 import { formatCycle } from "@/lib/format";
 import { CYCLE_TOKEN_ADDRESS, CYCLE_STAKING_ADDRESS } from "@/lib/contracts";
@@ -68,33 +68,48 @@ function TokenPill({ symbol, logo }: { symbol: string; logo?: string }) {
   );
 }
 
-/* ── Swap form ──────────────────────────────────────────── */
+/* ── Swap form (bidirectional CYCLE ↔ WETH) ─────────────── */
 function SwapForm() {
   const { isConnected } = useAccount();
   const { balance } = useToken();
-  const { quote, poolExists, isQuoting, isSwapping, txHash, error, getQuote, checkPool, swap } = useSwap();
+  const { quote, poolExists, wethBalance, isQuoting, isSwapping, txHash, error, getQuote, checkPool, swap } = useSwap();
 
-  const [input, setInput] = useState("");
-  const SLIPPAGE = 0.005; // 0.5%
+  const [input, setInput]         = useState("");
+  const [direction, setDirection] = useState<SwapDirection>("WETH_TO_CYCLE"); // default: buy CYCLE
+  const SLIPPAGE = 0.005;
 
-  const parsed = (() => { try { return input ? parseUnits(input, 18) : 0n; } catch { return 0n; } })();
+  const isBuying  = direction === "WETH_TO_CYCLE";
+  const payToken  = isBuying ? "WETH" : "CYCLE";
+  const getToken  = isBuying ? "CYCLE" : "WETH";
+  const payBal    = isBuying ? wethBalance : balance;
+
+  const parsed  = (() => { try { return input ? parseUnits(input, 18) : 0n; } catch { return 0n; } })();
   const minOut  = quote ? BigInt(Math.floor(Number(quote) * (1 - SLIPPAGE))) : 0n;
-  const overBal = parsed > balance && parsed > 0n;
+  const overBal = parsed > payBal && parsed > 0n;
 
   useEffect(() => { checkPool(); }, [checkPool]);
   useEffect(() => {
-    const t = setTimeout(() => { if (parsed > 0n) getQuote(parsed); else setInput(prev => prev); }, 500);
+    const t = setTimeout(() => { if (parsed > 0n) getQuote(parsed, direction); }, 500);
     return () => clearTimeout(t);
-  }, [parsed, getQuote]);
+  }, [parsed, direction, getQuote]);
+  useEffect(() => { setQuote_local(null); setInput(""); }, [direction]);
+
+  /* Local state reset helper */
+  const [, setQuote_local] = useState<null>(null);
 
   useEffect(() => {
-    if (txHash) { toast.success("Swap successful!"); setInput(""); }
+    if (txHash) { toast.success(`${isBuying ? "Buy" : "Sell"} successful!`); setInput(""); }
   }, [txHash]);
 
   async function handleSwap() {
     if (!isConnected || parsed === 0n || overBal || !quote) return;
-    try { await swap(parsed, minOut); } catch { /* error is in state */ }
+    try { await swap(parsed, minOut, direction); } catch { /* error in state */ }
   }
+
+  const flipDirection = () => {
+    setDirection(d => d === "CYCLE_TO_WETH" ? "WETH_TO_CYCLE" : "CYCLE_TO_WETH");
+    setInput("");
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "18px 16px" }}>
@@ -102,38 +117,40 @@ function SwapForm() {
       {/* From */}
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-          <span style={labelStyle}>You Pay</span>
+          <span style={labelStyle}>From</span>
           <span style={{ fontFamily: MONO, fontSize: 10, color: "rgba(255,255,255,0.45)" }}>
-            Bal: {formatCycle(balance)}
+            Balance: {parseFloat(formatUnits(payBal, 18)).toFixed(4)}
           </span>
         </div>
-        <div style={{ position: "relative", display: "flex", gap: 8 }}>
+        <div style={{ display: "flex", gap: 8 }}>
           <input
             type="number" min="0" step="any" placeholder="0.0"
             value={input} onChange={e => setInput(e.target.value)}
             style={{ ...inputStyle(overBal), flex: 1 }}
           />
-          <TokenPill symbol="CYCLE" logo={LOGO} />
+          <TokenPill symbol={payToken} logo={isBuying ? undefined : LOGO} />
         </div>
         <button
-          onClick={() => setInput(formatUnits(balance, 18))}
-          style={{ fontFamily: PP, fontSize: 10, fontWeight: 700, color: "#3B82F6", background: "none", border: "none", cursor: "pointer", marginTop: 5, padding: 0 }}
+          onClick={() => setInput(formatUnits(payBal, 18))}
+          style={{ fontFamily: PP, fontSize: 10, fontWeight: 700, color: "#3099ef", background: "none", border: "none", cursor: "pointer", marginTop: 5, padding: 0 }}
         >MAX</button>
       </div>
 
-      {/* Arrow */}
+      {/* Flip arrow */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{
-          width: 32, height: 32, borderRadius: "50%",
-          background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
+        <button onClick={flipDirection} style={{
+          width: 34, height: 34, borderRadius: "50%",
+          background: "rgba(48,153,239,0.15)", border: "1px solid rgba(48,153,239,0.35)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          color: "rgba(255,255,255,0.55)", fontSize: 14,
-        }}>↓</div>
+          color: "#3099ef", fontSize: 16, cursor: "pointer", transition: "all 0.15s",
+        }}>⇅</button>
       </div>
 
       {/* To */}
       <div>
-        <span style={labelStyle}>You Receive (est.)</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+          <span style={labelStyle}>To (estimated)</span>
+        </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <div style={{
             flex: 1, height: 52, borderRadius: 10,
@@ -141,43 +158,37 @@ function SwapForm() {
             display: "flex", alignItems: "center", padding: "0 14px",
             fontFamily: MONO, fontSize: 16, color: quote ? "#fff" : "rgba(255,255,255,0.28)",
           }}>
-            {isQuoting ? "…" : quote ? formatUnits(quote, 18).slice(0, 10) : "0.0"}
+            {isQuoting ? "…" : quote ? parseFloat(formatUnits(quote, 18)).toFixed(6) : "0.0"}
           </div>
-          <TokenPill symbol="WETH" />
+          <TokenPill symbol={getToken} logo={isBuying ? LOGO : undefined} />
         </div>
       </div>
 
-      {/* Rate info */}
+      {/* Rate */}
       {quote && parsed > 0n && !overBal && (
         <div style={{
-          background: "rgba(59,130,246,0.07)", border: "1px solid rgba(59,130,246,0.18)",
+          background: "rgba(48,153,239,0.08)", border: "1px solid rgba(48,153,239,0.20)",
           borderRadius: 10, padding: "9px 12px",
           display: "flex", justifyContent: "space-between",
         }}>
           <span style={{ fontFamily: PP, fontSize: 11, color: "rgba(255,255,255,0.50)" }}>Rate</span>
           <span style={{ fontFamily: MONO, fontSize: 11, color: "#fff" }}>
-            1 CYCLE = {(Number(formatUnits(quote, 18)) / Number(formatUnits(parsed, 18))).toFixed(8)} WETH
+            1 {payToken} = {(Number(formatUnits(quote, 18)) / Number(formatUnits(parsed, 18))).toFixed(6)} {getToken}
           </span>
         </div>
       )}
 
-      {/* Pool not found */}
       {poolExists === false && (
-        <div style={{
-          background: "rgba(245,158,11,0.09)", border: "1px solid rgba(245,158,11,0.22)",
-          borderRadius: 10, padding: "10px 12px",
-          fontFamily: PP, fontSize: 12, color: "#F59E0B",
-        }}>
-          ⚠ No CYCLE/WETH liquidity pool on Sepolia yet. Swap will fail until a pool is created.
+        <div style={{ background: "rgba(245,158,11,0.09)", border: "1px solid rgba(245,158,11,0.22)", borderRadius: 10, padding: "10px 12px", fontFamily: PP, fontSize: 12, color: "#F59E0B" }}>
+          ⚠ No CYCLE/WETH pool on Sepolia yet. Create the pool first via the Pool tab.
         </div>
       )}
 
       {error && <p style={{ fontFamily: PP, fontSize: 12, color: "#EF4444" }}>{error}</p>}
-      {overBal && <p style={{ fontFamily: PP, fontSize: 12, color: "#EF4444" }}>⚠ Insufficient balance</p>}
+      {overBal && <p style={{ fontFamily: PP, fontSize: 12, color: "#EF4444" }}>⚠ Insufficient {payToken} balance</p>}
 
-      {/* Slippage */}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <span style={{ fontFamily: PP, fontSize: 10, color: "rgba(255,255,255,0.40)" }}>Slippage tolerance</span>
+        <span style={{ fontFamily: PP, fontSize: 10, color: "rgba(255,255,255,0.40)" }}>Slippage</span>
         <span style={{ fontFamily: MONO, fontSize: 10, color: "rgba(255,255,255,0.55)" }}>0.5%</span>
       </div>
 
@@ -187,12 +198,15 @@ function SwapForm() {
         className="btn-primary w-full"
         style={{ height: 50, fontSize: 13 }}
       >
-        {!isConnected ? "Connect Wallet" : isSwapping ? "Swapping…" : "Swap CYCLE → WETH"}
+        {!isConnected ? "Connect Wallet"
+          : isSwapping ? "Swapping…"
+          : isBuying   ? `Buy CYCLE with WETH`
+          :               `Sell CYCLE for WETH`}
       </button>
 
       {txHash && (
         <a href={`https://sepolia.etherscan.io/tx/${txHash}`} target="_blank" rel="noreferrer"
-          style={{ fontFamily: PP, fontSize: 11, color: "#3B82F6", textAlign: "center", textDecoration: "none" }}>
+          style={{ fontFamily: PP, fontSize: 11, color: "#3099ef", textAlign: "center", textDecoration: "none" }}>
           View transaction ↗
         </a>
       )}
