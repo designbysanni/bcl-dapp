@@ -5,11 +5,11 @@
 @layer base {
   :root {
     /* Page */
-    --bg-page:    #1565D8;
+    --bg-page:    #135989;
 
-    /* Cards — near-black navy with slight blue tint */
-    --bg-card:    rgba(4, 9, 30, 0.96);
-    --bg-card-el: rgba(7, 14, 45, 0.98);
+    /* Cards */
+    --bg-card:    #131939;
+    --bg-card-el: #0d1631;
 
     /* Borders */
     --border:     rgba(255,255,255,0.09);
@@ -41,9 +41,6 @@
 
   body {
     background-color: var(--bg-page);
-    background-image:
-      radial-gradient(ellipse 100% 65% at 50% -5%, rgba(120,170,255,0.30) 0%, transparent 58%),
-      radial-gradient(ellipse 65% 45% at 88% 88%, rgba(30,55,170,0.22) 0%, transparent 52%);
     color: var(--text-primary);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -154,7 +151,7 @@
 [data-rk] {
   --rk-colors-accentColor:            #2563EB !important;
   --rk-colors-accentColorForeground:  #ffffff !important;
-  --rk-colors-modalBackground:        #040920 !important;
+  --rk-colors-modalBackground:        #131939 !important;
   --rk-colors-modalBorder:            rgba(255,255,255,0.11) !important;
   --rk-colors-modalText:              #ffffff !important;
   --rk-colors-modalTextSecondary:     rgba(255,255,255,0.55) !important;
