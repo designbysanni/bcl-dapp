@@ -609,7 +609,7 @@ export default function Home() {
                     }}
                   >← Assets</button>
                   <span style={{ fontFamily: PP, fontWeight: 700, fontSize: 15, color: "#fff" }}>
-                    Swap Tokens
+                    Stake, Swap & Send
                   </span>
                 </div>
                 <ActionPanel forcedTab={"swap" as any} />
@@ -691,7 +691,7 @@ export default function Home() {
                   onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = "rgba(255,255,255,0.55)"; }}
                 >← Assets</button>
                 <span style={{ fontFamily: PP, fontWeight: 700, fontSize: 18, color: "#fff" }}>
-                  Swap Tokens
+                  Stake, Swap & Send
                 </span>
               </div>
               <div style={{ maxWidth: 480, width: "100%", margin: "0 auto" }}>
