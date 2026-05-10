@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BCL Docs — Block Cycle Labs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #135989;
+      --card:    #131939;
+      --darker:  #0d1631;
+      --blue:    #1565D8;
+      --green:   #10B981;
+      --muted:   rgba(255,255,255,0.55);
+      --dim:     rgba(255,255,255,0.28);
+      --border:  rgba(255,255,255,0.10);
+      --sans:    'Poppins', system-ui, sans-serif;
+      --mono:    'Space Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: #fff;
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar       { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 4px; }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--card);
+      border-right: 1px solid var(--border);
+      padding: 28px 0 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 22px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    .sidebar-logo span {
+      font-family: var(--sans);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .sidebar-section {
+      font-family: var(--sans);
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      padding: 0 22px 8px;
+      margin-top: 16px;
+    }
+
+    .sidebar-link {
+      display: block;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 22px;
+      transition: all 0.14s;
+      border-left: 2px solid transparent;
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border-left-color: var(--blue);
+    }
+
+    /* ── Main content ── */
+    .main {
+      flex: 1;
+      max-width: 820px;
+      padding: 52px 48px 80px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 48px 0 14px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 28px 0 10px;
+      color: rgba(255,255,255,0.90);
+    }
+
+    p {
+      font-size: 14.5px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.8;
+    }
+
+    a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+
+    /* ── Lead text ── */
+    .lead {
+      font-size: 17px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .badge-testnet {
+      background: rgba(245,158,11,0.14);
+      color: #F59E0B;
+      border: 1px solid rgba(245,158,11,0.30);
+    }
+    .badge-apy {
+      background: rgba(16,185,129,0.12);
+      color: #10B981;
+      border: 1px solid rgba(16,185,129,0.25);
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .card p { margin-bottom: 0; }
+
+    /* ── Info grid ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .info-grid { grid-template-columns: 1fr; }
+    }
+
+    .info-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+
+    .info-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--dim);
+      margin-bottom: 6px;
+    }
+
+    .info-value {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .info-value.green  { color: #10B981; }
+    .info-value.blue   { color: #60a5fa; }
+    .info-value.purple { color: #a78bfa; }
+
+    /* ── Code block ── */
+    .code-block {
+      background: var(--darker);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 14px 0;
+      overflow-x: auto;
+    }
+
+    .code-block code {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: #a5f3fc;
+      white-space: pre;
+    }
+
+    /* ── Step list ── */
+    .steps {
+      list-style: none;
+      margin: 16px 0 24px;
+    }
+
+    .steps li {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 18px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 12px;
+      color: #fff;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-text {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .step-text strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Warning / note ── */
+    .note {
+      background: rgba(59,130,246,0.09);
+      border: 1px solid rgba(59,130,246,0.22);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.75);
+      margin: 16px 0;
+      line-height: 1.7;
+    }
+
+    .warning {
+      background: rgba(245,158,11,0.09);
+      border: 1px solid rgba(245,158,11,0.22);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13.5px;
+      color: #F59E0B;
+      margin: 16px 0;
+    }
+
+    /* ── Contract address ── */
+    .contract-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .contract-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.60);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .contract-addr {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #60a5fa;
+      word-break: break-all;
+    }
+
+    /* ── FAQ ── */
+    .faq-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 10px;
+    }
+
+    .faq-q {
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .faq-a {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* ── CTA button ── */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--blue);
+      color: #fff;
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 24px;
+      padding: 12px 24px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.16s;
+      margin-top: 8px;
+    }
+    .cta-btn:hover { opacity: 0.85; text-decoration: none; }
+
+    /* ── Hero section ── */
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 40px 36px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--blue), #8B5CF6, transparent);
+    }
+
+    .hero-title {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 540px;
+      margin-bottom: 24px;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .layout { flex-direction: column; }
+      .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 0;
+      }
+      .main { padding: 28px 20px 60px; }
+      h1 { font-size: 26px; }
+      h2 { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <img src="https://i.ibb.co/XZXzy5Rt/68aee553aa779e1297fca7eb.png" alt="BCL" />
+      <span>BCL Docs</span>
+    </div>
+
+    <div class="sidebar-section">Getting Started</div>
+    <a class="sidebar-link active" href="#overview">Overview</a>
+    <a class="sidebar-link" href="#quickstart">Quick Start</a>
+    <a class="sidebar-link" href="#wallet">Wallet Setup</a>
+
+    <div class="sidebar-section">Core Features</div>
+    <a class="sidebar-link" href="#staking">Staking $CYCLE</a>
+    <a class="sidebar-link" href="#swap">Swap</a>
+    <a class="sidebar-link" href="#send">Send</a>
+    <a class="sidebar-link" href="#pool">Liquidity Pool</a>
+
+    <div class="sidebar-section">Reference</div>
+    <a class="sidebar-link" href="#contracts">Smart Contracts</a>
+    <a class="sidebar-link" href="#tokenomics">Tokenomics</a>
+    <a class="sidebar-link" href="#faq">FAQ</a>
+    <a class="sidebar-link" href="#security">Security</a>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ── Overview ── -->
+    <section id="overview">
+      <div class="hero">
+        <div class="hero-badges">
+          <span class="badge badge-testnet">🔬 Sepolia Testnet</span>
+          <span class="badge badge-apy">12% Fixed APY</span>
+        </div>
+        <div class="hero-title">Block Cycle Labs Documentation</div>
+        <p class="hero-sub">
+          BCL is a decentralized staking protocol on Ethereum Sepolia Testnet. Stake your $CYCLE tokens and earn 12% fixed annual rewards — no lockups, no hidden fees.
+        </p>
+        <a class="cta-btn" href="https://bcl.sannisanni.com" target="_blank">
+          ↗ Open DApp
+        </a>
+      </div>
+
+      <h2 id="overview-detail" style="border-top:none; margin-top:0; padding-top:0;">What is Block Cycle Labs?</h2>
+      <p>Block Cycle Labs (BCL) is a DeFi protocol that lets holders of the $CYCLE ERC-20 token stake their tokens directly on-chain and earn fixed annual percentage yield (APY) paid from the protocol's reward pool.</p>
+      <p>The protocol runs on <strong>Ethereum Sepolia Testnet</strong> — a public test environment that mirrors mainnet behaviour. All transactions are gasless (using Sepolia ETH) and fully on-chain.</p>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Fixed APY</div>
+          <div class="info-value green">12%</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Network</div>
+          <div class="info-value blue">Sepolia Testnet</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Token</div>
+          <div class="info-value">$CYCLE (ERC-20)</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Lock-up Period</div>
+          <div class="info-value purple">None</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Quick Start ── -->
+    <h2 id="quickstart">Quick Start</h2>
+    <p>Get staking in under 3 minutes by following these steps.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Install MetaMask</strong> — Download the MetaMask browser extension at <a href="https://metamask.io" target="_blank">metamask.io</a> and create or import a wallet.</div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Add Sepolia Testnet</strong> — In MetaMask, go to Settings → Networks → Add Network and add Sepolia, or switch via the network dropdown and select "Show Test Networks".</div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Get Sepolia ETH</strong> — Visit <a href="https://sepoliafaucet.com" target="_blank">sepoliafaucet.com</a> and request free testnet ETH for gas fees.</div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Get $CYCLE tokens</strong> — Open the DApp, click <strong>Buy $CYCLE</strong> in the nav to access the Swap interface and acquire CYCLE tokens.</div>
+      </li>
+      <li>
+        <div class="step-num">5</div>
+        <div class="step-text"><strong>Stake</strong> — Enter the amount you wish to stake in the Stake panel, approve the transaction in MetaMask, and start earning rewards immediately.</div>
+      </li>
+    </ol>
+
+    <div class="note">
+      💡 Rewards accrue in real-time and can be claimed at any time. There is no minimum staking period.
+    </div>
+
+    <!-- ── Wallet Setup ── -->
+    <h2 id="wallet">Wallet Setup</h2>
+    <p>The BCL DApp supports any EVM-compatible wallet. We recommend MetaMask, but WalletConnect-compatible wallets also work.</p>
+
+    <h3>Supported Wallets</h3>
+    <div class="card">
+      <div class="card-title">MetaMask</div>
+      <p>The most widely used browser extension wallet. Supports Sepolia Testnet natively.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">WalletConnect</div>
+      <p>Connect any mobile wallet (Rainbow, Trust Wallet, etc.) by scanning a QR code.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Coinbase Wallet</div>
+      <p>Browser extension and mobile app both work. Enable Sepolia in Settings → Networks.</p>
+    </div>
+
+    <h3>Adding the CYCLE Token to MetaMask</h3>
+    <p>To see your $CYCLE balance in MetaMask, add the token manually:</p>
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-text">Open MetaMask → Switch to Sepolia Testnet</div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-text">Click <strong>Import tokens</strong> at the bottom of the Assets tab</div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-text">Paste the CYCLE token address: <code style="font-family:var(--mono); font-size:12px; color:#60a5fa;">0xBF059Bd2D017f22853A1D692A2a1713E2a38310A</code></div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-text">MetaMask auto-fills the symbol (CYCLE) and decimals (18). Click <strong>Add Custom Token</strong>.</div>
+      </li>
+    </ol>
+
+    <!-- ── Staking ── -->
+    <h2 id="staking">Staking $CYCLE</h2>
+    <p>Staking locks your $CYCLE tokens in the BCL Staking contract and starts earning you a 12% fixed APY, credited continuously.</p>
+
+    <h3>How to Stake</h3>
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-text">Connect your wallet using the <strong>Connect</strong> button in the navbar.</div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-text">Navigate to the <strong>Stake</strong> tab in the action panel.</div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-text">Enter the amount of CYCLE you want to stake. You can use the <strong>MAX</strong> button to stake your entire balance.</div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-text">Click <strong>Approve</strong> to let the staking contract spend your tokens (one-time approval per session).</div>
+      </li>
+      <li>
+        <div class="step-num">5</div>
+        <div class="step-text">Click <strong>Stake</strong> and confirm the transaction in your wallet. Your position is live immediately.</div>
+      </li>
+    </ol>
+
+    <h3>Claiming Rewards</h3>
+    <p>Rewards accumulate every second based on your staked balance. You can claim at any time:</p>
+    <ul class="steps">
+      <li>
+        <div class="step-num">→</div>
+        <div class="step-text">Click the <strong>Claim Rewards</strong> button in the Stake tab or on your staked asset card.</div>
+      </li>
+    </ul>
+
+    <h3>Unstaking</h3>
+    <p>You can unstake any amount at any time. Unstaking returns your principal plus any unclaimed rewards in a single transaction.</p>
+
+    <div class="warning">
+      ⚠️ Unstaking requires a Sepolia ETH gas fee. Always keep a small amount of Sepolia ETH in your wallet.
+    </div>
+
+    <h3>Reward Calculation</h3>
+    <p>Rewards are calculated linearly over a 365-day year:</p>
+    <div class="code-block">
+      <code>Daily Reward  = (Staked Amount × 0.12) ÷ 365
+Hourly Reward = Daily Reward ÷ 24
+Per-Second    = Hourly Reward ÷ 3600</code>
+    </div>
+    <p>For example, staking 1,000 CYCLE earns approximately <strong>120 CYCLE/year</strong>, or ~0.329 CYCLE/day.</p>
+
+    <!-- ── Swap ── -->
+    <h2 id="swap">Swap</h2>
+    <p>The Swap tab integrates with <strong>Uniswap V3</strong> on Sepolia to let you exchange CYCLE ↔ WETH directly within the DApp.</p>
+
+    <h3>How to Swap</h3>
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-text">Click <strong>Buy $CYCLE</strong> in the navbar or navigate to the <strong>Swap</strong> tab in the action panel.</div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-text">Enter the amount of CYCLE you want to sell. The estimated WETH output updates in real-time.</div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-text">Review the rate and 0.5% slippage tolerance displayed below the inputs.</div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-text">Click <strong>Swap CYCLE → WETH</strong>. The DApp handles the approval automatically if needed.</div>
+      </li>
+    </ol>
+
+    <div class="note">
+      ℹ️ If no CYCLE/WETH pool exists on Sepolia yet, the Swap tab will display a warning and the Pool tab will let you create one on Uniswap.
+    </div>
+
+    <h3>Slippage &amp; Price Impact</h3>
+    <p>The default slippage tolerance is <strong>0.5%</strong>. For low-liquidity pools on testnet, price impact may be higher. The quoted output is an estimate from Uniswap's QuoterV2 contract.</p>
+
+    <!-- ── Send ── -->
+    <h2 id="send">Send</h2>
+    <p>The Send tab lets you transfer $CYCLE tokens directly to any Ethereum address.</p>
+
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-text">Switch to the <strong>Send</strong> tab in the action panel.</div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-text">Enter the recipient's wallet address (must start with <code style="font-family:var(--mono); font-size:12px; color:#60a5fa;">0x</code>).</div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-text">Enter the amount of CYCLE to send. Use <strong>MAX</strong> to send your full balance.</div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-text">Click <strong>Send CYCLE</strong> and confirm in your wallet.</div>
+      </li>
+    </ol>
+
+    <!-- ── Pool ── -->
+    <h2 id="pool">Liquidity Pool</h2>
+    <p>The Pool tab shows the status of the CYCLE/WETH Uniswap V3 pool on Sepolia and provides a direct link to manage liquidity.</p>
+
+    <div class="card">
+      <div class="card-title">CYCLE / WETH · 0.3% Fee Tier</div>
+      <p>Liquidity providers earn 0.3% of every swap through the pool. LP tokens remain in your wallet — BCL never custodies your funds.</p>
+    </div>
+
+    <p>To add liquidity, click <strong>Manage Liquidity on Uniswap</strong> in the Pool tab. You will be directed to the Uniswap V3 interface on Sepolia.</p>
+
+    <!-- ── Contracts ── -->
+    <h2 id="contracts">Smart Contracts</h2>
+    <p>All BCL contracts are deployed on Ethereum Sepolia Testnet and verified on Etherscan.</p>
+
+    <div class="card">
+      <div class="contract-row">
+        <span class="contract-label">CYCLE Token (ERC-20)</span>
+        <a class="contract-addr" href="https://sepolia.etherscan.io/address/0xBF059Bd2D017f22853A1D692A2a1713E2a38310A" target="_blank">
+          0xBF059Bd2D017f22853A1D692A2a1713E2a38310A ↗
+        </a>
+      </div>
+      <div class="contract-row">
+        <span class="contract-label">BCL Staking</span>
+        <a class="contract-addr" href="https://sepolia.etherscan.io/address/0xc30B9Bf7ebb0e071755b2195C04e8aF85EF0FAf3" target="_blank">
+          0xc30B9Bf7ebb0e071755b2195C04e8aF85EF0FAf3 ↗
+        </a>
+      </div>
+      <div class="contract-row">
+        <span class="contract-label">Uniswap V3 Router (Sepolia)</span>
+        <a class="contract-addr" href="https://sepolia.etherscan.io/address/0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48" target="_blank">
+          0x3bFA4769FB09eefC5a80d6E87c3B9C650f7Ae48 ↗
+        </a>
+      </div>
+      <div class="contract-row" style="border-bottom:none;">
+        <span class="contract-label">WETH (Sepolia)</span>
+        <a class="contract-addr" href="https://sepolia.etherscan.io/address/0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14" target="_blank">
+          0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14 ↗
+        </a>
+      </div>
+    </div>
+
+    <h3>ABI &amp; Integration</h3>
+    <p>The core staking functions:</p>
+    <div class="code-block">
+      <code>// Stake CYCLE tokens
+function stake(uint256 amount) external;
+
+// Unstake + auto-claim rewards
+function unstake(uint256 amount) external;
+
+// Claim rewards without unstaking
+function claimRewards() external;
+
+// View functions
+function stakedBalance(address user) view returns (uint256);
+function pendingRewards(address user) view returns (uint256);
+function totalStaked() view returns (uint256);
+function rewardPool() view returns (uint256);</code>
+    </div>
+
+    <!-- ── Tokenomics ── -->
+    <h2 id="tokenomics">Tokenomics</h2>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">Token Name</div>
+        <div class="info-value">Block Cycle Token</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Symbol</div>
+        <div class="info-value blue">$CYCLE</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Decimals</div>
+        <div class="info-value">18</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Standard</div>
+        <div class="info-value">ERC-20</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Network</div>
+        <div class="info-value blue">Sepolia Testnet</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Staking APY</div>
+        <div class="info-value green">12% Fixed</div>
+      </div>
+    </div>
+
+    <p>The protocol's reward pool funds staking rewards. Rewards are distributed directly from the contract balance — no inflationary minting occurs during staking.</p>
+
+    <!-- ── FAQ ── -->
+    <h2 id="faq">FAQ</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Is the BCL DApp safe to use?</div>
+      <p class="faq-a">The DApp runs on Sepolia Testnet, which uses test tokens with no real monetary value. Smart contracts are verified on Etherscan and interactions are fully on-chain. Never send real ETH to Sepolia addresses.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I lose my staked tokens?</div>
+      <p class="faq-a">No. Your staked CYCLE tokens are held in the non-custodial staking contract. Only you can unstake them. BCL Labs has no admin key to move user funds.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Why do I need Sepolia ETH?</div>
+      <p class="faq-a">Every on-chain transaction (stake, unstake, claim, swap, send) requires a small gas fee paid in Sepolia ETH. Get free Sepolia ETH from <a href="https://sepoliafaucet.com" target="_blank">sepoliafaucet.com</a>.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">When are rewards updated?</div>
+      <p class="faq-a">The DApp displays a real-time reward counter that increments every second based on your staked balance and the 12% APY. The on-chain claimable amount updates per block.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is there a minimum stake amount?</div>
+      <p class="faq-a">No minimum. You can stake any amount of CYCLE, including fractional amounts.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">The swap shows "No liquidity pool found" — what does that mean?</div>
+      <p class="faq-a">The CYCLE/WETH pool on Uniswap V3 Sepolia may not exist yet or may have insufficient liquidity. Use the Pool tab to create or add liquidity to the pool on Uniswap.</p>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Will BCL launch on mainnet?</div>
+      <p class="faq-a">BCL is currently in testnet phase. Follow official announcements on the BCL website and social channels for mainnet launch details.</p>
+    </div>
+
+    <!-- ── Security ── -->
+    <h2 id="security">Security</h2>
+
+    <div class="card">
+      <div class="card-title">Non-Custodial</div>
+      <p>BCL Labs never holds your tokens. All funds are locked in auditable smart contracts on-chain. Only your private key can initiate a withdrawal.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Open Source</div>
+      <p>The BCL DApp frontend is open source. Smart contracts are verified on Etherscan and can be inspected by anyone.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Testnet Only</div>
+      <p>BCL currently operates exclusively on Sepolia Testnet. All tokens are testnet assets with zero real-world value. This is a safe environment to learn DeFi.</p>
+    </div>
+
+    <div class="warning">
+      ⚠️ BCL Labs will never ask for your seed phrase or private key. Never share these with anyone.
+    </div>
+
+    <div style="margin-top: 60px; padding-top: 28px; border-top: 1px solid var(--border); text-align: center;">
+      <p style="font-size:13px; color:var(--dim);">© 2026 Block Cycle Labs · <a href="https://bcl.sannisanni.com">DApp</a> · <a href="https://sepolia.etherscan.io/address/0xc30B9Bf7ebb0e071755b2195C04e8aF85EF0FAf3" target="_blank">Staking Contract ↗</a></p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  /* Highlight active sidebar link on scroll */
+  const links = document.querySelectorAll('.sidebar-link');
+  const sections = document.querySelectorAll('section, h2[id]');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.sidebar-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  document.querySelectorAll('[id]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

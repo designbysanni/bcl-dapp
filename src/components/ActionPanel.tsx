@@ -360,8 +360,12 @@ function PoolPanel() {
 }
 
 /* ── Action Panel (main export) ─────────────────────────── */
-export function ActionPanel() {
+export function ActionPanel({ forcedTab }: { forcedTab?: Tab | null }) {
   const [tab, setTab] = useState<Tab>("stake");
+
+  useEffect(() => {
+    if (forcedTab) setTab(forcedTab);
+  }, [forcedTab]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>

@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  /* Disable Next.js dev indicators and Vercel toolbar overlay */
+  devIndicators: false,
   webpack: (config) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.resolve.alias = {
