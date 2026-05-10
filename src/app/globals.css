@@ -1,40 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Space+Mono:wght@400;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Exact Figma colors — sampled from screenshot */
-    --bg-page:     #1565D8;   /* vivid royal blue page background */
-    --bg-deep:     #0d1b4b;   /* dark navy — card/panel bg */
-    --bg-surface:  #112060;   /* slightly lighter navy for inner elements */
-    --bg-elevated: #1a2d7a;   /* hover states */
-    --bg-card:     #0f1e55;   /* asset card background */
+    --bg-page:     #1565D8;
+    --bg-deep:     #0d1b4b;
+    --bg-surface:  #112060;
+    --bg-elevated: #1a2d7a;
+    --bg-card:     #0f1e55;
 
-    /* Accents */
     --accent-cyan:   #00C6FF;
     --accent-purple: #A855F7;
     --accent-green:  #22c55e;
     --accent-blue:   #3b82f6;
 
-    /* Text */
     --text-primary:   #ffffff;
-    --text-secondary: rgba(255,255,255,0.70);
-    --text-muted:     rgba(255,255,255,0.42);
-    --text-dim:       rgba(255,255,255,0.22);
+    --text-secondary: rgba(255,255,255,0.75);
+    --text-muted:     rgba(255,255,255,0.50);
+    --text-dim:       rgba(255,255,255,0.28);
 
-    /* Borders */
-    --border:       rgba(255,255,255,0.12);
+    --border:       rgba(255,255,255,0.13);
     --border-light: rgba(255,255,255,0.07);
+
+    --font-sans: var(--font-poppins), 'Poppins', system-ui, sans-serif;
+    --font-mono: var(--font-mono), 'Space Mono', monospace;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html, body {
     height: 100%;
-    overflow: hidden; /* NO page scroll — viewport locked */
+    overflow: hidden;
   }
 
   body {
@@ -43,7 +40,7 @@
       radial-gradient(ellipse 110% 70% at 50% -10%, rgba(100,160,255,0.35) 0%, transparent 60%),
       radial-gradient(ellipse 70% 50% at 90% 90%, rgba(30,60,180,0.25) 0%, transparent 55%);
     color: var(--text-primary);
-    font-family: 'Exo 2', system-ui, sans-serif;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -54,11 +51,10 @@
     color: #fff;
   }
 
-  /* Thin scrollbar for sidebar only */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.30); }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.32); }
 }
 
 @layer components {
@@ -71,10 +67,10 @@
     gap: 6px;
     background: #ffffff;
     color: #0d1b4b;
-    font-family: 'Exo 2', sans-serif;
-    font-weight: 800;
+    font-family: var(--font-sans);
+    font-weight: 700;
     font-size: 12px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     border: none;
     border-radius: 8px;
@@ -103,12 +99,12 @@
     gap: 6px;
     background: transparent;
     color: #ffffff;
-    font-family: 'Exo 2', sans-serif;
-    font-weight: 700;
+    font-family: var(--font-sans);
+    font-weight: 600;
     font-size: 12px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    border: 1.5px solid rgba(255,255,255,0.35);
+    border: 1.5px solid rgba(255,255,255,0.38);
     border-radius: 8px;
     padding: 0 20px;
     height: 44px;
@@ -131,8 +127,8 @@
     justify-content: center;
     gap: 6px;
     background: transparent;
-    color: rgba(255,255,255,0.60);
-    font-family: 'Exo 2', sans-serif;
+    color: rgba(255,255,255,0.65);
+    font-family: var(--font-sans);
     font-weight: 600;
     font-size: 12px;
     border: none;
@@ -142,7 +138,7 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-  .btn-ghost:hover { color: #fff; background: rgba(255,255,255,0.08); }
+  .btn-ghost:hover { color: #fff; background: rgba(255,255,255,0.09); }
 
   /* ── Cards ── */
   .card {
@@ -152,26 +148,25 @@
     padding: 20px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.07);
   }
-  .card-glow { @apply card; }
 
   /* ── Input ── */
   .input-base {
     width: 100%;
     background: rgba(255,255,255,0.07);
-    border: 1.5px solid rgba(255,255,255,0.14);
+    border: 1.5px solid rgba(255,255,255,0.16);
     border-radius: 10px;
     height: 52px;
     padding: 0 52px 0 14px;
     color: #fff;
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 17px;
     font-weight: 600;
     outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
-  .input-base::placeholder { color: rgba(255,255,255,0.20); }
+  .input-base::placeholder { color: rgba(255,255,255,0.22); }
   .input-base:focus {
-    border-color: rgba(255,255,255,0.40);
+    border-color: rgba(255,255,255,0.42);
     box-shadow: 0 0 0 3px rgba(255,255,255,0.07);
   }
   .input-base.border-status-error\/50 { border-color: rgba(248,113,113,0.55); }
@@ -183,10 +178,10 @@
     gap: 6px;
     padding: 4px 12px;
     border-radius: 50px;
-    font-family: 'Exo 2', sans-serif;
+    font-family: var(--font-sans);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.10em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
   .badge-network {
@@ -204,15 +199,15 @@
 
   /* ── Stat text ── */
   .stat-label {
-    font-family: 'Exo 2', sans-serif;
+    font-family: var(--font-sans);
     font-size: 9px;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     color: var(--text-muted);
   }
   .stat-value {
-    font-family: 'Exo 2', sans-serif;
+    font-family: var(--font-sans);
     font-weight: 800;
     color: #ffffff;
   }
@@ -232,19 +227,17 @@
   }
 
   /* ── Glow border ── */
-  .glow-border {
-    transition: border-color 0.22s, box-shadow 0.22s;
-  }
+  .glow-border { transition: border-color 0.22s, box-shadow 0.22s; }
   .glow-border:hover {
-    border-color: rgba(255,255,255,0.28) !important;
+    border-color: rgba(255,255,255,0.30) !important;
     box-shadow: 0 0 22px rgba(255,255,255,0.07);
   }
 }
 
 /* ── RainbowKit overrides ── */
 [data-rk] {
-  --rk-colors-accentColor: #ffffff !important;
-  --rk-colors-accentColorForeground: #0d1b4b !important;
+  --rk-colors-accentColor: #1565D8 !important;
+  --rk-colors-accentColorForeground: #ffffff !important;
   --rk-colors-modalBackground: #0f1e55 !important;
   --rk-colors-modalBorder: rgba(255,255,255,0.12) !important;
   --rk-colors-modalText: #ffffff !important;
@@ -254,28 +247,27 @@
   --rk-radii-modal: 16px !important;
 }
 
-/* Force ConnectButton white pill style */
 [data-rk] button[data-testid="rk-connect-button"] {
-  background: #ffffff !important;
-  color: #0d1b4b !important;
+  background: #1565D8 !important;
+  color: #ffffff !important;
   border-radius: 28px !important;
-  font-family: 'Exo 2', sans-serif !important;
-  font-weight: 800 !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 700 !important;
   font-size: 11px !important;
-  letter-spacing: 0.08em !important;
+  letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
   padding: 8px 18px !important;
   border: none !important;
   box-shadow: 0 4px 14px rgba(0,0,0,0.25) !important;
 }
 [data-rk] button[data-testid="rk-account-button"] {
-  background: #ffffff !important;
-  color: #0d1b4b !important;
+  background: #1565D8 !important;
+  color: #ffffff !important;
   border-radius: 28px !important;
-  font-family: 'Exo 2', sans-serif !important;
-  font-weight: 800 !important;
+  font-family: var(--font-sans) !important;
+  font-weight: 700 !important;
   font-size: 11px !important;
-  letter-spacing: 0.08em !important;
+  letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
   padding: 8px 18px !important;
   border: none !important;
@@ -284,7 +276,7 @@
 /* ── Reward counter ── */
 .reward-counter {
   font-variant-numeric: tabular-nums;
-  font-family: 'Space Mono', monospace;
+  font-family: var(--font-mono);
   color: #22c55e;
 }
 

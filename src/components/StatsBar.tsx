@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useStaking } from "@/hooks/useStaking";
 import { formatCycle } from "@/lib/format";
@@ -8,17 +8,17 @@ export function StatsBar() {
   const { totalStaked, rewardPool } = useStaking();
 
   const stats = [
-    { label: "Fixed APY",         value: "12%",                        sub: "Annual Percentage Yield",   color: "#22c55e", icon: "✦" },
-    { label: "Total Value Staked", value: formatCycle(totalStaked),     sub: "CYCLE tokens",              color: "#60a5fa", icon: "◈" },
-    { label: "Reward Pool",        value: formatCycle(rewardPool),      sub: "Available for rewards",     color: "#a78bfa", icon: "⬡" },
-    { label: "Reward Type",        value: "Fixed",                      sub: "No lock-up period",         color: "#60a5fa", icon: "⚡" },
+    { label: "Fixed APY",         value: "12%",                        sub: "Annual Percentage Yield",   color: "#22c55e", icon: "âœ¦" },
+    { label: "Total Value Staked", value: formatCycle(totalStaked),     sub: "CYCLE tokens",              color: "#60a5fa", icon: "â—ˆ" },
+    { label: "Reward Pool",        value: formatCycle(rewardPool),      sub: "Available for rewards",     color: "#a78bfa", icon: "â¬¡" },
+    { label: "Reward Type",        value: "Fixed",                      sub: "No lock-up period",         color: "#60a5fa", icon: "âš¡" },
   ];
 
   return (
     <section style={{ padding: '24px 16px 40px', maxWidth: 1100, margin: '0 auto' }}>
       {/* Section title */}
       <h2 style={{
-        fontFamily: "'Exo 2', sans-serif",
+        fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
         fontWeight: 800,
         fontSize: 18,
         color: 'rgba(255,255,255,0.85)',
@@ -51,20 +51,20 @@ export function StatsBar() {
           >
             <div style={{ fontSize: 20, marginBottom: 8, color: s.color }}>{s.icon}</div>
             <p style={{
-              fontFamily: "'Exo 2', sans-serif",
+              fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
               fontSize: 9, fontWeight: 700,
               textTransform: 'uppercase', letterSpacing: '0.12em',
               color: 'rgba(255,255,255,0.42)',
               marginBottom: 4,
             }}>{s.label}</p>
             <p style={{
-              fontFamily: "'Exo 2', sans-serif",
+              fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
               fontWeight: 800, fontSize: 26,
               color: s.color, letterSpacing: '-0.02em',
               lineHeight: 1.1, marginBottom: 4,
             }}>{s.value}</p>
             <p style={{
-              fontFamily: "'Exo 2', sans-serif",
+              fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
               fontSize: 11, color: 'rgba(255,255,255,0.38)',
             }}>{s.sub}</p>
           </div>
@@ -95,7 +95,7 @@ function ContractCard({ label, address }: { label: string; address: string }) {
     }}>
       <div>
         <p style={{
-          fontFamily: "'Exo 2', sans-serif",
+          fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
           fontSize: 9, fontWeight: 700,
           textTransform: 'uppercase', letterSpacing: '0.12em',
           color: 'rgba(255,255,255,0.42)',
@@ -105,7 +105,7 @@ function ContractCard({ label, address }: { label: string; address: string }) {
           fontFamily: "'Space Mono', monospace",
           fontSize: 11, color: 'rgba(255,255,255,0.60)',
         }}>
-          {isPlaceholder ? "Not deployed" : `${address.slice(0, 10)}…${address.slice(-6)}`}
+          {isPlaceholder ? "Not deployed" : `${address.slice(0, 10)}â€¦${address.slice(-6)}`}
         </p>
       </div>
       {!isPlaceholder && (
@@ -113,7 +113,7 @@ function ContractCard({ label, address }: { label: string; address: string }) {
           href={etherscanAddress(address)}
           target="_blank" rel="noopener noreferrer"
           style={{
-            fontFamily: "'Exo 2', sans-serif",
+            fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
             fontSize: 11, fontWeight: 700,
             color: '#60a5fa',
             textDecoration: 'none',
@@ -121,7 +121,7 @@ function ContractCard({ label, address }: { label: string; address: string }) {
             flexShrink: 0,
           }}
         >
-          Etherscan ↗
+          Etherscan â†—
         </a>
       )}
     </div>

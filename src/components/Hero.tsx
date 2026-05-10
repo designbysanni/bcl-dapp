@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useStaking } from "@/hooks/useStaking";
 import { formatCycle } from "@/lib/format";
 
-// The Figma design has no separate hero section —
+// The Figma design has no separate hero section â€”
 // the protocol stats are shown inline in the main grid.
 // This component renders the 4-stat strip at the very top
 // of the content area, matching the Figma exactly.
@@ -38,7 +38,7 @@ export function Hero() {
           border: '1px solid rgba(255,255,255,0.15)',
           borderRadius: 50,
           padding: '6px 16px',
-          fontFamily: "'Exo 2', sans-serif",
+          fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
           fontWeight: 700,
           fontSize: 11,
           letterSpacing: '0.10em',
@@ -73,7 +73,7 @@ export function Hero() {
             backdropFilter: 'blur(8px)',
           }}>
             <p style={{
-              fontFamily: "'Exo 2', sans-serif",
+              fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
               fontSize: 9,
               fontWeight: 700,
               textTransform: 'uppercase',
@@ -82,7 +82,7 @@ export function Hero() {
               marginBottom: 6,
             }}>{s.label}</p>
             <p style={{
-              fontFamily: "'Exo 2', sans-serif",
+              fontFamily: "'Poppins', var(--font-poppins), system-ui, sans-serif",
               fontSize: 20,
               fontWeight: 800,
               color: s.color,

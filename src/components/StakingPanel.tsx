@@ -12,6 +12,9 @@ import clsx from "clsx";
 
 type Tab = "stake" | "unstake";
 
+const PP   = "'Poppins', var(--font-poppins), system-ui, sans-serif";
+const MONO = "'Space Mono', var(--font-mono), monospace";
+
 const S: Record<string, React.CSSProperties> = {
   panel: {
     display: 'flex',
@@ -25,12 +28,12 @@ const S: Record<string, React.CSSProperties> = {
     gap: 0,
   },
   tab: {
-    fontFamily: "'Exo 2', sans-serif",
-    fontWeight: 600,
+    fontFamily: PP,
+    fontWeight: 500,
     fontSize: 13,
     letterSpacing: '0.04em',
     textTransform: 'uppercase' as const,
-    color: 'rgba(255,255,255,0.45)',
+    color: 'rgba(255,255,255,0.50)',
     padding: '14px 18px',
     background: 'transparent',
     border: 'none',
@@ -51,12 +54,12 @@ const S: Record<string, React.CSSProperties> = {
     gap: 14,
   },
   label: {
-    fontFamily: "'Exo 2', sans-serif",
+    fontFamily: PP,
     fontSize: 10,
-    fontWeight: 700,
+    fontWeight: 600,
     textTransform: 'uppercase' as const,
-    letterSpacing: '0.10em',
-    color: 'rgba(255,255,255,0.42)',
+    letterSpacing: '0.09em',
+    color: 'rgba(255,255,255,0.50)',
     marginBottom: 6,
   },
   inputWrap: {
@@ -67,7 +70,7 @@ const S: Record<string, React.CSSProperties> = {
     right: 12,
     top: '50%',
     transform: 'translateY(-50%)',
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: PP,
     fontSize: 10,
     fontWeight: 700,
     color: '#60a5fa',
@@ -85,15 +88,15 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 13,
   },
   balanceLabel: {
-    fontFamily: "'Exo 2', sans-serif",
+    fontFamily: PP,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.45)',
+    color: 'rgba(255,255,255,0.52)',
     fontWeight: 500,
   },
   balanceValue: {
-    fontFamily: "'Space Mono', monospace",
+    fontFamily: MONO,
     fontSize: 12,
-    color: 'rgba(255,255,255,0.80)',
+    color: 'rgba(255,255,255,0.85)',
     fontWeight: 600,
   },
   estimateBox: {
@@ -101,13 +104,13 @@ const S: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     alignItems: 'center',
     background: 'rgba(34,197,94,0.07)',
-    border: '1px solid rgba(34,197,94,0.18)',
+    border: '1px solid rgba(34,197,94,0.20)',
     borderRadius: 10,
     padding: '10px 14px',
     fontSize: 12,
   },
   errorText: {
-    fontFamily: "'Exo 2', sans-serif",
+    fontFamily: PP,
     fontSize: 12,
     color: '#f87171',
     fontWeight: 600,
@@ -125,16 +128,16 @@ const S: Record<string, React.CSSProperties> = {
   },
   txLink: {
     textAlign: 'center' as const,
-    fontFamily: "'Exo 2', sans-serif",
+    fontFamily: PP,
     fontSize: 11,
     color: '#60a5fa',
     textDecoration: 'none',
   },
   unstakeNote: {
     textAlign: 'center' as const,
-    fontFamily: "'Exo 2', sans-serif",
+    fontFamily: PP,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.40)',
+    color: 'rgba(255,255,255,0.45)',
   },
 };
 
@@ -273,10 +276,10 @@ export function StakingPanel() {
         {/* Annual estimate */}
         {annualEst && !isOverBalance && tab === "stake" && (
           <div style={S.estimateBox}>
-            <span style={{ fontFamily: "'Exo 2', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
+            <span style={{ fontFamily: PP, fontSize: 12, color: 'rgba(255,255,255,0.55)' }}>
               Estimated annual rewards
             </span>
-            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: '#22c55e', fontWeight: 700 }}>
+            <span style={{ fontFamily: MONO, fontSize: 12, color: '#22c55e', fontWeight: 700 }}>
               +{annualEst} CYCLE
             </span>
           </div>
@@ -329,7 +332,7 @@ export function StakingPanel() {
 function StepDot({ active, done, label }: { active: boolean; done: boolean; label: string }) {
   const color = done ? '#22c55e' : active ? '#60a5fa' : 'rgba(255,255,255,0.35)';
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, fontFamily: "'Exo 2', sans-serif", fontWeight: 600, color }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, fontFamily: PP, fontWeight: 600, color }}>
       <span style={{
         width: 20, height: 20, borderRadius: '50%',
         border: `1px solid ${color}`,
